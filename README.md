@@ -25,7 +25,7 @@ HW2_aengstrom28
 > mm_pd$cell <- gsub(".*:", "", mm_pd$characteristics_ch1.1)
 
 #Set-up design matrix and linear model
-> mm_matrix <-model.matrix(~0+HCV,mm_pd)
+> mm_matrix <-model.matrix(~treatment+HCV,mm_pd)
 > colnames(mm_matrix) <- c("Neg", "Pos")
 > fit_mm_matrix <- lmFit(mm_eset, mm_matrix)
 > ebay_mm_matrix <- eBayes(fit_mm_matrix)
@@ -43,3 +43,13 @@ HW2_aengstrom28
 > ebay_fit2 <- eBayes(fit2)
 > cont_matrix
 > colnames(ebay_fit2)
+
+#
+> model.matrix ~ treatment+VL
+> do a topTable on the fit for treatment+VL
+colnames(TopHCV
+> sum(TopHCV$adj.p < 0.05)
+eset_small <- eSet[TopHCV$adj.p <0.05,]
+> set-up contrast for treatment between poly-mock treated to find probes that are differentially expressed in the poly treated group
+> set-up contrast for HCV+ - HCV-
+>
