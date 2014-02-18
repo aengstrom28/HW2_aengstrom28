@@ -24,7 +24,7 @@ HW2_aengstrom28
 > mm_pd$treatment <- gsub(".*: ", "", mm_pd$characteristics_ch1.2)
 > mm_pd$cell <- gsub(".*:", "", mm_pd$characteristics_ch1.1)
 
-#Set-up design matrix
+#Set-up design matrix and linear model
 > mm_matrix <-model.matrix(~0+HCV,mm_pd)
 > fit_mm_matrix <- lmFit(mm_eset, mm_matrix)
 > ebay_mm_matrix <- eBayes(fit_mm_matrix)
