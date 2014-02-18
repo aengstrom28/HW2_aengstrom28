@@ -26,6 +26,7 @@ HW2_aengstrom28
 
 #Set-up design matrix and linear model
 > mm_matrix <-model.matrix(~0+HCV,mm_pd)
+> colnames(mm_matrix) <- c("Neg", "Pos")
 > fit_mm_matrix <- lmFit(mm_eset, mm_matrix)
 > ebay_mm_matrix <- eBayes(fit_mm_matrix)
 > TopHCV <- topTable(ebay_mm_matrix,adjust="BH")
@@ -34,8 +35,7 @@ HW2_aengstrom28
 > TopHCV[,35]
 
 #Set-up contrasts
-> colnames(mm_matrix) <- c("Neg", "Pos")
-> cont.matrix <- makeContrasts(Neg-Pos,levels=mm_matrix)
+> cont_matrix <- makeContrasts(Neg-Pos,levels=mm_matrix)
 > rownames(cont_matrix)
 > colnames(fit_mm_matrix$coef)
 > colnames(fit_mm_matrix$coef) <- c("Neg", "Pos")
