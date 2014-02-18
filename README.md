@@ -40,3 +40,6 @@ HW2_aengstrom28
 > colnames(fit_mm_matrix$coef)
 > colnames(fit_mm_matrix$coef) <- c("Neg", "Pos")
 > fit2 <- contrasts.fit(fit_mm_matrix, cont_matrix)
+> ebay_fit2 <- eBayes(fit2)
+> cont_matrix
+> colnames(ebay_fit2)
