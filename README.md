@@ -19,7 +19,7 @@ HW2_aengstrom28
 > mm_eset <- gds[,rownames(mm_pd)]
 #Change "characteristics_ch1" to HCV status (viral load + or -)
 > mm_pd$HCV <- gsub(".*: ", "", mm_pd$characteristics_ch1)
-> mm_pd$HCV <- ifelse(mm_gds_pd$HCV=="Neg", "-", "+")
+> mm_pd$HCV <- ifelse(mm_pd$HCV=="Neg", "-", "+")
 #Change "characteristics_ch1.2" to treatment (Mock or Poly IC) and characteristics_ch1.1 to cell (cell-type is macrophage)
 > mm_pd$treatment <- gsub(".*: ", "", mm_pd$characteristics_ch1.2)
 > mm_pd$cell <- gsub(".*:", "", mm_pd$characteristics_ch1.1)
