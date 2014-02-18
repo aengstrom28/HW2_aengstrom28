@@ -51,4 +51,5 @@ colnames(TopHCV
 > sum(TopHCV$adj.p < 0.05)
 eset_small <- eSet[TopHCV$adj.p <0.05,]
 > set-up contrast for HCV+ - HCV-
->
+>may need to do linear model pulling from new eset
+> then set-up new contrast matrix using VL- VL+ form old matrix)
