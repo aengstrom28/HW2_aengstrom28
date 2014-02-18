@@ -22,7 +22,6 @@ HW2_aengstrom28
 > mm_pd$HCV <- ifelse(mm_pd$HCV=="Neg", "-", "+")
 #Change "characteristics_ch1.2" to treatment (Mock or Poly IC) and characteristics_ch1.1 to cell (cell-type is macrophage)
 > mm_pd$treatment <- gsub(".*: ", "", mm_pd$characteristics_ch1.2)
-> mm_pd$cell <- gsub(".*:", "", mm_pd$characteristics_ch1.1)
 
 #Set-up design matrix and linear model
 > mm_matrix <-model.matrix(~treatment+HCV,mm_pd)
@@ -46,10 +45,10 @@ HW2_aengstrom28
 
 #
 > model.matrix ~ treatment+VL
+> set-up contrast from model.matrix for treatment between poly-mock treated to find probes that are differentially expressed in the poly treated group
 > do a topTable on the fit for treatment+VL
 colnames(TopHCV
 > sum(TopHCV$adj.p < 0.05)
 eset_small <- eSet[TopHCV$adj.p <0.05,]
-> set-up contrast for treatment between poly-mock treated to find probes that are differentially expressed in the poly treated group
 > set-up contrast for HCV+ - HCV-
 >
