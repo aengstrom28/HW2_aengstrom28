@@ -85,3 +85,6 @@ eset_small <- eSet[TopHCV$adj.p <0.05,]
 > contrast_treatment <- makeContrasts(Mock-Poly,levels=treatment_matrix)
 > sum(TopHCV2$adj.P.Val < 0.1)
 [1] 10
+
+> library(pheatmap)
+> pheatmap(contrast_treatment)
