@@ -53,3 +53,35 @@ eset_small <- eSet[TopHCV$adj.p <0.05,]
 > set-up contrast for HCV+ - HCV-
 >may need to do linear model pulling from new eset
 > then set-up new contrast matrix using VL- VL+ form old matrix)
+
+> mm_pd <- pd[pd$source_name_ch1=="Monocyte-derived Macrophage",]
+> mm_eset <- gds[,rownames(mm_pd)]
+> mm_pd$HCV <- gsub(".*: ", "", mm_pd$characteristics_ch1)
+> mm_pd$HCV <- ifelse(mm_pd$HCV=="Neg", "-", "+")
+> mm_pd$treatment <- gsub(".*: ", "", mm_pd$characteristics_ch1.2)
+
+> HCV_matrix <-model.matrix(~0+HCV,mm_pd)
+> colnames(HCV_matrix) <- c("Neg", "Pos")
+> fit_HCV_matrix <- lmFit(mm_eset, HCV_matrix)
+> ebay_HCV_matrix <- eBayes(fit_HCV_matrix)
+> TopHCV <- topTable(ebay_HCV_matrix,adjust="BH")
+> colnames(TopHCV)
+
+
+> contrast_HCV <- makeContrasts(Neg-Pos,levels=HCV_matrix)
+> sum(TopHCV$adj.P.Val < 0.1)
+[1] 10
+> HCV_eset_small <- mm_pd[TopHCV$adj.P.Val <0.1,]
+> treatment_matrix <-model.matrix(~0+treatment,HCV_eset_small)
+
+> fit_treatment_matrix <- lmFit(mm_eset, treatment_matrix)
+> ebay_treatment_matrix <- eBayes(fit_treatment_matrix)
+> TopHCV2 <- topTable(ebay_treatment_matrix,adjust="BH")
+> colnames(TopHCV2)
+     
+> mm_pd$treatment
+
+> colnames(treatment_matrix) <- c("Mock", "Poly")
+> contrast_treatment <- makeContrasts(Mock-Poly,levels=treatment_matrix)
+> sum(TopHCV2$adj.P.Val < 0.1)
+[1] 10
