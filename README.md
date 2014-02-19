@@ -60,6 +60,7 @@ eset_small <- eSet[TopHCV$adj.p <0.05,]
 > mm_pd$HCV <- ifelse(mm_pd$HCV=="Neg", "-", "+")
 > mm_pd$treatment <- gsub(".*: ", "", mm_pd$characteristics_ch1.2)
 
+#Do this but do treatment first, subset based on poly vs mock, then go to HCV
 > HCV_matrix <-model.matrix(~0+HCV,mm_pd)
 > colnames(HCV_matrix) <- c("Neg", "Pos")
 > fit_HCV_matrix <- lmFit(mm_eset, HCV_matrix)
