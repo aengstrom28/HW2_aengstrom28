@@ -10,82 +10,37 @@ HW2_aengstrom28
 > gse_new <- getGEO(filename = "/Users/jjengstrom/Biostat-578/Data/GSE40812_series_matrix.txt.gz")
 > setwd("~/aengstrom28")
 
-#Cleaning-up data
+#Cleaning up data
 > gds <- gse_new
 > pd <- pData(gds)
-> colnames(pd)
-#Using monocyte-derived macrophage data from pData
-> mm_pd <- pd[pd$source_name_ch1=="Monocyte-derived Macrophage",]
-> mm_eset <- gds[,rownames(mm_pd)]
-#Change "characteristics_ch1" to HCV status (viral load + or -)
-> mm_pd$HCV <- gsub(".*: ", "", mm_pd$characteristics_ch1)
-> mm_pd$HCV <- ifelse(mm_pd$HCV=="Neg", "-", "+")
-#Change "characteristics_ch1.2" to treatment (Mock or Poly IC) and characteristics_ch1.1 to cell (cell-type is macrophage)
-> mm_pd$treatment <- gsub(".*: ", "", mm_pd$characteristics_ch1.2)
-
-#Set-up design matrix and linear model
-> mm_matrix <-model.matrix(~treatment+HCV,mm_pd)
-> colnames(mm_matrix) <- c("Neg", "Pos")
-> fit_mm_matrix <- lmFit(mm_eset, mm_matrix)
-> ebay_mm_matrix <- eBayes(fit_mm_matrix)
-> TopHCV <- topTable(ebay_mm_matrix,adjust="BH")
-> colnames(TopHCV)
-> colnames(fit_mm_matrix$coef)
-> TopHCV[,35]
-
-#Set-up contrasts
-> cont_matrix <- makeContrasts(Neg-Pos,levels=mm_matrix)
-> rownames(cont_matrix)
-> colnames(fit_mm_matrix$coef)
-> colnames(fit_mm_matrix$coef) <- c("Neg", "Pos")
-> fit2 <- contrasts.fit(fit_mm_matrix, cont_matrix)
-> ebay_fit2 <- eBayes(fit2)
-> cont_matrix
-> colnames(ebay_fit2)
-
-#
-> model.matrix ~ treatment+VL
-> set-up contrast from model.matrix for treatment between poly-mock treated to find probes that are differentially expressed in the poly treated group
-> do a topTable on the fit for treatment+VL
-colnames(TopHCV
-> sum(TopHCV$adj.p < 0.05)
-eset_small <- eSet[TopHCV$adj.p <0.05,]
-> set-up contrast for HCV+ - HCV-
->may need to do linear model pulling from new eset
-> then set-up new contrast matrix using VL- VL+ form old matrix)
-
 > mm_pd <- pd[pd$source_name_ch1=="Monocyte-derived Macrophage",]
 > mm_eset <- gds[,rownames(mm_pd)]
 > mm_pd$HCV <- gsub(".*: ", "", mm_pd$characteristics_ch1)
 > mm_pd$HCV <- ifelse(mm_pd$HCV=="Neg", "-", "+")
 > mm_pd$treatment <- gsub(".*: ", "", mm_pd$characteristics_ch1.2)
 
-#Do this but do treatment first, subset based on poly vs mock, then go to HCV
-> HCV_matrix <-model.matrix(~0+HCV,mm_pd)
+#Setting up design matrix for limmma to test for differential expression between poly IC and mock treated groups at p-value < 0.1
+> treat_matrix <- model.matrix(~treatment+0, mm_pd)
+> colnames(treat_matrix)
+[1] "treatmentMock"      "treatmentPoly IC H"
+> colnames(treat_matrix) <- c("Mock", "Poly")
+> fit2 <- lmFit(mm_eset, treat_matrix)
+> fit2 <- eBayes(fit2)
+
+#Top table of results, adjusted for false discovery rate (5%)
+> TopTable2 <- topTable(fit2, coef="Poly", number=Inf, adjust="BH")
+> sum(TopTable2$adj.P.Val < 0.1)
+
+#Make new eset using the 47323 probes that are differentially expressed between poly Ic and mock treatments and set-up a new design matrix to test for statistically significant (p-value <0.1) change in expression between HCV+ and HCV- patients
+> eset_small <- mm_pd[TopTable2$adj.P.Val < 0.1,]
+> HCV_matrix <- model.matrix(~0+HCV, eset_small)
+> colnames(HCV_matrix)
 > colnames(HCV_matrix) <- c("Neg", "Pos")
-> fit_HCV_matrix <- lmFit(mm_eset, HCV_matrix)
-> ebay_HCV_matrix <- eBayes(fit_HCV_matrix)
-> TopHCV <- topTable(ebay_HCV_matrix,adjust="BH")
-> colnames(TopHCV)
+> fit7 <- lmFit(mm_eset, HCV_matrix)
+> fit7_ebay <- eBayes(fit7)
+> TopTable7 <- topTable(fit7_ebay, coef="Neg", adjust="BH")
+> sum(TopTable7$adj.P.Val < 0.1)
+
+```
 
 
-> contrast_HCV <- makeContrasts(Neg-Pos,levels=HCV_matrix)
-> sum(TopHCV$adj.P.Val < 0.1)
-[1] 10
-> HCV_eset_small <- mm_pd[TopHCV$adj.P.Val <0.1,]
-> treatment_matrix <-model.matrix(~0+treatment,HCV_eset_small)
-
-> fit_treatment_matrix <- lmFit(mm_eset, treatment_matrix)
-> ebay_treatment_matrix <- eBayes(fit_treatment_matrix)
-> TopHCV2 <- topTable(ebay_treatment_matrix,adjust="BH")
-> colnames(TopHCV2)
-     
-> mm_pd$treatment
-
-> colnames(treatment_matrix) <- c("Mock", "Poly")
-> contrast_treatment <- makeContrasts(Mock-Poly,levels=treatment_matrix)
-> sum(TopHCV2$adj.P.Val < 0.1)
-[1] 10
-
-> library(pheatmap)
-> pheatmap(contrast_treatment)
