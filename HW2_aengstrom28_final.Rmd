@@ -7,7 +7,7 @@ library(Biobase)
 library(data.table)
 library(GEOquery)
 library(limma)
-gse_new <- getGEO("GSE40812", destdir = ".../.../")
+gse_new <- getGEO("GSE40812", destdir = "DATA/GEO/")
 ```
 
 ```{r}
