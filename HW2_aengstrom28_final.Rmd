@@ -7,9 +7,9 @@ library(Biobase)
 library(data.table)
 library(GEOquery)
 library(limma)
-gse_new <- getGEO("GSE40812", destdir = "DATA/GEO/")
+gse_new <- getGEO("GSE40812")
 ```
-
+set working directory to source file location
 ```{r}
 #Cleaning up data
 gds <- gse_new
