@@ -6,8 +6,7 @@ library(Biobase)
 library(data.table)
 library(GEOquery)
 library(limma)
-gse_new <- getGEO(filename = "/Users/jjengstrom/Biostat-578/Data/GSE40812_series_matrix.txt.gz")
-setwd("~/aengstrom28")
+gse_new <- getGEO("GSE40812", destdir = ".../.../")
 
 #Cleaning up data
 gds <- gse_new
