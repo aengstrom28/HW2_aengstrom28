@@ -7,6 +7,10 @@ library(data.table)
 library(GEOquery)
 library(limma)
 gse_new <- getGEO("GSE40812", destdir = ".../.../")
+<<<<<<< HEAD
+=======
+setwd("~/aengstrom28")
+>>>>>>> 3d0933252c1bcf4ac313dc44fe79dcca670d9335
 
 #Cleaning up data
 gds <- gse_new
