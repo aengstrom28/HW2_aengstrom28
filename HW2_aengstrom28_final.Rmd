@@ -1,5 +1,7 @@
 HW2_aengstrom28
 ===============
+```{r}
+===============
 # Getting data
 source("http://bioconductor.org/biocLite.R")
 library(Biobase)
@@ -7,7 +9,9 @@ library(data.table)
 library(GEOquery)
 library(limma)
 gse_new <- getGEO("GSE40812", destdir = ".../.../")
+```
 
+```{r}
 #Cleaning up data
 gds <- gse_new
 pd <- pData(gds)
@@ -16,18 +20,24 @@ mm_eset <- gds[,rownames(mm_pd)]
 mm_pd$HCV <- gsub(".*: ", "", mm_pd$characteristics_ch1)
 mm_pd$HCV <- ifelse(mm_pd$HCV=="Neg", "-", "+")
 mm_pd$treatment <- gsub(".*: ", "", mm_pd$characteristics_ch1.2)
+```
 
+```{r}
 #Setting up design matrix for limmma to test for differential expression between poly IC and mock treated groups at p-value < 0.1
 treat_matrix <- model.matrix(~treatment+0, mm_pd)
 colnames(treat_matrix)
 colnames(treat_matrix) <- c("Mock", "Poly")
 fit2 <- lmFit(mm_eset, treat_matrix)
 fit2 <- eBayes(fit2)
+```
 
+```{r}
 #Top table of results, adjusted for false discovery rate (5%)
 TopTable2 <- topTable(fit2, coef="Poly", number=Inf, adjust="BH")
 sum(TopTable2$adj.P.Val < 0.1)
+```
 
+```{r}
 #Make new eset using the 47323 probes that are differentially expressed between poly Ic and mock treatments and set-up a new design matrix to test for statistically significant (p-value <0.1) change in expression between HCV+ and HCV- patients
 eset_small <- mm_pd[TopTable2$adj.P.Val < 0.1,]
 HCV_matrix <- model.matrix(~0+HCV, eset_small)
@@ -37,3 +47,4 @@ fit7 <- lmFit(mm_eset, HCV_matrix)
 fit7_ebay <- eBayes(fit7)
 TopTable7 <- topTable(fit7_ebay, coef="Neg", adjust="BH")
 sum(TopTable7$adj.P.Val < 0.1)
+```
