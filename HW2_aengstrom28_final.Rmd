@@ -1,7 +1,6 @@
 HW2_aengstrom28
 ===============
-```{r}
-===============
+
 # Getting data
 source("http://bioconductor.org/biocLite.R")
 library(Biobase)
