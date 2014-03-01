@@ -2,17 +2,25 @@ HW2_aengstrom28
 ===============
 
 # Getting data
-source("http://bioconductor.org/biocLite.R")
+
+```{r}
+# source("http://bioconductor.org/biocLite.R")
 library(Biobase)
 library(data.table)
 library(GEOquery)
 library(limma)
+```
+
+```{r, cache=TRUE}
+# We cache the data
 gse_new <- getGEO("GSE40812")
 ```
+
+
 set working directory to source file location
 ```{r}
 #Cleaning up data
-gds <- gse_new
+gds <- gse_new[[1]]
 pd <- pData(gds)
 mm_pd <- pd[pd$source_name_ch1=="Monocyte-derived Macrophage",]
 mm_eset <- gds[,rownames(mm_pd)]
@@ -32,6 +40,7 @@ fit2 <- eBayes(fit2)
 
 ```{r}
 #Top table of results, adjusted for false discovery rate (5%)
+# You say 5% but the code below has .1?
 TopTable2 <- topTable(fit2, coef="Poly", number=Inf, adjust="BH")
 sum(TopTable2$adj.P.Val < 0.1)
 ```
@@ -45,5 +54,5 @@ colnames(HCV_matrix) <- c("Neg", "Pos")
 fit7 <- lmFit(mm_eset, HCV_matrix)
 fit7_ebay <- eBayes(fit7)
 TopTable7 <- topTable(fit7_ebay, coef="Neg", adjust="BH")
-sum(TopTable7$adj.P.Val < 0.1)
+sum(TopTable7$P.Value < 0.1)
 ```
